@@ -61,22 +61,19 @@ def restore_model(testPicArr):
 
 
 #opencv图像预处理
-def pre_high(name,flag=-1,ifplt=1):
-    img = cv2.imread(name)
+def pre_high(img,flag=-1,ifplt=1):
+    #img = cv2.imread(name)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray=mark(gray)
     res = cv2.resize(gray,(28,28),interpolation=cv2.INTER_AREA)
     (_, res1) = cv2.threshold(res, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     #print(res1)
-
     if(flag==-1):
         (_, res1) = cv2.threshold(res, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-        _+=10   #测试出来比otsu算法阈值高10更好
+        #_+=10   #测试出来比otsu算法阈值高10更好
         (_, res1) = cv2.threshold(res, _, 1, cv2.THRESH_BINARY_INV)
     else:
         (_, res) = cv2.threshold(res, flag, 1, cv2.THRESH_BINARY_INV)
-
-
     im_arr = np.array(res1)
     #print(im_arr)
     #print(_)
@@ -85,16 +82,23 @@ def pre_high(name,flag=-1,ifplt=1):
         plt.title('OPENCV')
         plt.axis('off')
         plt.show()
-
-
     nm_arr = res1.reshape([1, 784])
     nm_arr = nm_arr.astype(np.float32)
     #print(nm_arr)
     return nm_arr
 
+path_head='D:/ACM/machine_learn/final_work/pic/testpic/test/'
+path_tail='.png'
+for i in range(1,10):
+    path=path_head+str(i)+path_tail
+    img=cv2.imread(path)
+    p1=pre_high(img)
+    print(restore_model(p1))
 
 
-path='pic/'+'test'+'.png'
+'''
+path='D:/ACM/machine_learn/final_work/pic/testpic/6.png'
 p1 = pre_high(path)
 ans = restore_model(p1)
 print(ans)
+'''

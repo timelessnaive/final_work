@@ -1,0 +1,35 @@
+#coding=utf-8
+import cv2
+import numpy as np
+import functions
+
+
+def draw_circle(event,x,y,flags,param):
+    global f
+    #cv2.CV_EVENT_FLAG_LBUTTON
+    if(event==cv2.EVENT_LBUTTONDOWN):
+        f=1
+    elif(event==cv2.EVENT_LBUTTONUP):
+        f=-1
+    if (f == 1):
+        cv2.circle(img,(x,y),10,(255,0,0),-1)
+
+img = np.zeros((512, 512, 3), np.uint8)
+f = 0
+def main():
+
+    cv2.namedWindow('image')
+    cv2.setMouseCallback('image', draw_circle)
+
+    while(True):
+        cv2.imshow('image', img)
+        if cv2.waitKey(20) & 0xFF == 27:
+            break
+    cv2.destroyAllWindows()
+    cv2.imshow('img',img)
+    testPicArr = functions.pre_high(img)
+    preValue = functions.restore_model(testPicArr)
+    print(preValue)
+    cv2.waitKey(0)
+if __name__ == '__main__':
+    main()

@@ -25,10 +25,11 @@ def MyDataObject():
 
     return wxPyPlot.PlotGraphics([markers, lines], GraphTitle, "X Axis", "Y Axis")
 
-class MyFrame1(wx.Frame):
+
+class MyFrame1(wx.MDIParentFrame):
 
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=u"手写数字识别", pos=wx.DefaultPosition, size=wx.Size(500, 500),
+        wx.MDIParentFrame.__init__(self, parent, id=wx.ID_ANY, title=u"手写数字识别", pos=wx.DefaultPosition, size=wx.Size(500, 500),
                           style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
         '''
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
@@ -63,7 +64,8 @@ class MyFrame1(wx.Frame):
         self.SetMenuBar(self.mainmenu)
         self.Bind(wx.EVT_MENU, self.pic_plot, id=self.m_menuItem1.GetId())
         self.Centre(wx.BOTH)
-        self.pc = wxPyPlot.PlotCanvas(self)
+
+
         # Connect Events
         #self.m_button1.Bind(wx.EVT_BUTTON, self.main_button_click)
 
@@ -73,13 +75,29 @@ class MyFrame1(wx.Frame):
 
     # Virtual event handlers, overide them in your derived class
     def main_button_click(self, event):
-        #path = self.m_textCtrl1.GetValue()
-        #self.m_textCtrl2.SetValue(path)
-        #self.pc.Draw(MyDataObject())
         pass
 
     def pic_plot(self, event):
-        self.pc.Draw(MyDataObject())
+        class plotframe(wx.MDIChildFrame):
+            def __init__(self):
+                wx.MDIChildFrame.__init__(self,None, -1, "Child Window")
+                menu = wx.Menu()
+                menu.Append(5000, "&New Window")
+                menu.Append(5001, "&Exit")
+                menubar = wx.MenuBar()
+                menubar.Append(menu, "&File")
+                self.SetMenuBar(menubar)
+                self.Bind(wx.EVT_MENU, self.draw, id=5000)
+                self.Bind(wx.EVT_MENU, self.closeframe, id=5001)
+                self.pc = wxPyPlot.PlotCanvas(self)
+
+            def closeframe(self,event):
+                self.Close(True)
+            def draw(self):
+                self.pc.Draw(MyDataObject())
+        win = plotframe()
+        win.Show(True)
+
 if __name__ == '__main__':
     app = wx.App()
     tf = MyFrame1(None)

@@ -1,9 +1,31 @@
 import tensorflow as tf
+import numpy as np
+import cv2
 import mnist_backward
 import mnist_forward
-import cv2
-import numpy as np
 import matplotlib.pyplot as plt
+
+
+def restore_model(testPicArr):
+    with tf.Graph().as_default() as tg:
+        x = tf.placeholder(tf.float32, [None, mnist_forward.INPUT_NODE])
+        y = mnist_forward.forward(x, None)
+        preValue = tf.argmax(y, 1)
+
+        variable_averages = tf.train.ExponentialMovingAverage(mnist_backward.MOVING_AVERAGE_DECAY)
+        variables_to_restore = variable_averages.variables_to_restore()
+        saver = tf.train.Saver(variables_to_restore)
+
+        with tf.Session() as sess:
+            ckpt = tf.train.get_checkpoint_state(mnist_backward.MODEL_SAVE_PATH)
+            if ckpt and ckpt.model_checkpoint_path:
+                saver.restore(sess, ckpt.model_checkpoint_path)
+
+                preValue = sess.run(preValue, feed_dict={x: testPicArr})
+                return preValue
+            else:
+                print("No checkpoint file found")
+                return -1
 
 def mark(gray):
     gradX = cv2.Sobel(gray, cv2.CV_32F, dx=1, dy=0, ksize=-1)
@@ -34,29 +56,6 @@ def mark(gray):
     #cv2.drawContours(gray, [box], -1, (0, 255, 0), 3)
     return ans
 
-
-def restore_model(testPicArr):
-    with tf.Graph().as_default() as tg:
-        x = tf.placeholder(tf.float32, [None, mnist_forward.INPUT_NODE])
-        y = mnist_forward.forward(x, None)
-        preValue = tf.argmax(y, 1)
-
-        variable_averages = tf.train.ExponentialMovingAverage(mnist_backward.MOVING_AVERAGE_DECAY)
-        variables_to_restore = variable_averages.variables_to_restore()
-        saver = tf.train.Saver(variables_to_restore)
-
-        with tf.Session() as sess:
-            ckpt = tf.train.get_checkpoint_state(mnist_backward.MODEL_SAVE_PATH)
-            if ckpt and ckpt.model_checkpoint_path:
-                saver.restore(sess, ckpt.model_checkpoint_path)
-
-                preValue = sess.run(preValue, feed_dict={x: testPicArr})
-                return preValue
-            else:
-                print("No checkpoint file found")
-                return -1
-
-
 #opencv图像预处理
 def pre_high(img,flag=-1,ifplt=1):
     #img = cv2.imread(name)
@@ -84,10 +83,5 @@ def pre_high(img,flag=-1,ifplt=1):
     #print(nm_arr)
     return nm_arr
 
-path_head='D:/ACM/machine_learn/final_work/pic/testpic/test/'
-path_tail='.png'
-for i in range(1,10):
-    path=path_head+str(i)+path_tail
-    img=cv2.imread(path)
-    p1=pre_high(img)
-    print(restore_model(p1))
+
+

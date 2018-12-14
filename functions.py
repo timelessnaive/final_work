@@ -27,13 +27,18 @@ def restore_model(testPicArr):
                 print("No checkpoint file found")
                 return -1
 
-def mark(gray):
-    gradX = cv2.Sobel(gray, cv2.CV_32F, dx=1, dy=0, ksize=-1)
-    gradY = cv2.Sobel(gray, cv2.CV_32F, dx=0, dy=1, ksize=-1)
-    gradient = cv2.subtract(gradX, gradY)
-    gradient = cv2.convertScaleAbs(gradient)
-    blurred = cv2.blur(gradient, (9, 9))
-    (_, thresh) = cv2.threshold(blurred, 90, 255, cv2.THRESH_BINARY)
+def mark(gray,flag=-1):
+    if(flag==-1):
+        gradX = cv2.Sobel(gray, cv2.CV_32F, dx=1, dy=0, ksize=-1)
+        gradY = cv2.Sobel(gray, cv2.CV_32F, dx=0, dy=1, ksize=-1)
+        gradient = cv2.subtract(gradX, gradY)
+        gradient = cv2.convertScaleAbs(gradient)
+        blurred = cv2.blur(gradient, (9, 9))
+        #cv2.imshow('img2', blurred)
+        (_, thresh) = cv2.threshold(blurred, 90, 255, cv2.THRESH_BINARY)
+        #cv2.imshow('img1', thresh)
+    else:
+        thresh=gray
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25))
     closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     closed = cv2.erode(closed, None, iterations=4)
@@ -57,10 +62,10 @@ def mark(gray):
     return ans
 
 #opencv图像预处理
-def pre_high(img,flag=-1,ifplt=1):
+def pre_high(img,mf=-1,flag=-1,ifplt=1):
     #img = cv2.imread(name)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    gray=mark(gray)
+    gray=mark(gray,mf)
     res = cv2.resize(gray,(28,28),interpolation=cv2.INTER_AREA)
     (_, res1) = cv2.threshold(res, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     #print(res1)

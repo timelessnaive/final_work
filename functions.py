@@ -27,7 +27,7 @@ def restore_model(testPicArr):
                 print("No checkpoint file found")
                 return -1
 
-def mark(gray,flag=-1):
+def mark(gray,flag=-1):#输入必须是一张灰度图
     if(flag==-1):
         gradX = cv2.Sobel(gray, cv2.CV_32F, dx=1, dy=0, ksize=-1)
         gradY = cv2.Sobel(gray, cv2.CV_32F, dx=0, dy=1, ksize=-1)

@@ -24,9 +24,9 @@ def draw_circle(event,x,y,flags,param):
 
 f = 0
 f1 = 0
+#img = np.zeros((512, 512, 3), np.uint8)
 
-
-def main():
+def draw_line(img):
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw_circle)
 
@@ -44,10 +44,13 @@ def main():
     preValue = functions.restore_model(testPicArr)
     print(preValue)
     #cv2.waitKey(0)
+
+'''
 if __name__ == '__main__':
     while(True):
         try:
             img = np.zeros((512, 512, 3), np.uint8)
-            main()
+            draw_line(img)
         except ValueError:
             break
+'''

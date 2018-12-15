@@ -24,16 +24,18 @@ def draw_circle(event,x,y,flags,param):
 
 f = 0
 f1 = 0
-img = np.zeros((512, 512, 3), np.uint8)
-def main():
 
+
+def main():
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw_circle)
 
     while(True):
         cv2.imshow('image', img)
         if cv2.waitKey(20) & 0xFF == 27:
+            cv2.imwrite('img.png',img)
             break
+
     cv2.destroyAllWindows()
     #functions.pre_high(img,1)
     cv2.imshow('img',img)
@@ -41,6 +43,11 @@ def main():
     testPicArr = functions.pre_high(img,1)
     preValue = functions.restore_model(testPicArr)
     print(preValue)
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
 if __name__ == '__main__':
-    main()
+    while(True):
+        try:
+            img = np.zeros((512, 512, 3), np.uint8)
+            main()
+        except ValueError:
+            break

@@ -85,6 +85,11 @@ def pre_high(img,mf=-1,flag=-1,ifplt=1):
         plt.show()
     nm_arr = res1.reshape([1, 784])
     nm_arr = nm_arr.astype(np.float32)
+    cmp = np.zeros((28, 28, 1), np.uint8)
+    cmp = cmp.reshape([1, 784])
+    if((nm_arr==cmp).all()):
+        #print('yes')
+        raise ValueError
     #print(nm_arr)
     return nm_arr
 

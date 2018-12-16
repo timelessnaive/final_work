@@ -4,7 +4,6 @@
 import cv2
 '''
 import tensorflow as tf
-
 import mnist_backward
 import mnist_forward
 import matplotlib.pyplot as plt
@@ -14,18 +13,10 @@ import numpy as np
 import UI
 import wx
 import functions
-import draw
-
-
-
-
-
 f = 0
 f1 = 0
 
-
 # img = np.zeros((512, 512, 3), np.uint8)
-
 def draw_line(img):
     def draw_circle(event, x, y, flags, param):
         global f, f1
@@ -55,7 +46,7 @@ def draw_line(img):
     cv2.destroyAllWindows()
     # functions.pre_high(img,1)
     cv2.imshow('img', img)
-
+    img=cv2.bitwise_not(img)
     testPicArr = functions.pre_high(img, 1)
     preValue = functions.restore_model(testPicArr)
     print(preValue)
@@ -92,6 +83,7 @@ class window(UI.MyFrame1):
                 img = np.zeros((512, 512, 3), np.uint8)
                 draw_line(img)
             except ValueError:
+                #print('exit')
                 break
 
 

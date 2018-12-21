@@ -35,7 +35,7 @@ def mark(gray,flag=-1):#输入必须是一张灰度图
         gradient = cv2.convertScaleAbs(gradient)
         blurred = cv2.blur(gradient, (9, 9))
         #cv2.imshow('img2', blurred)
-        (_, thresh) = cv2.threshold(blurred, 90, 255, cv2.THRESH_BINARY)
+        (_, thresh) = cv2.threshold(blurred, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         #cv2.imshow('img1', thresh)
     else:
         thresh=gray

@@ -15,8 +15,9 @@ import wx
 import functions
 f = 0
 f1 = 0
-
 # img = np.zeros((512, 512, 3), np.uint8)
+
+
 def draw_line(img):
     def draw_circle(event, x, y, flags, param):
         global f, f1
@@ -49,7 +50,8 @@ def draw_line(img):
     img=cv2.bitwise_not(img)
     testPicArr = functions.pre_high(img, 1)
     preValue = functions.restore_model(testPicArr)
-    print(preValue)
+    return (preValue)
+    #print(preValue)
     # cv2.waitKey(0)
 
 

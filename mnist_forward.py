@@ -13,7 +13,8 @@ def get_weight(shape, regularizer):
 def get_bias(shape):  
     b = tf.Variable(tf.zeros(shape))  
     return b
-	
+
+
 def forward(x, regularizer):
     w1 = get_weight([INPUT_NODE, LAYER1_NODE], regularizer)
     b1 = get_bias([LAYER1_NODE])

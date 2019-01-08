@@ -1,22 +1,12 @@
 # coding:utf-8
-
-
 import cv2
-'''
-import tensorflow as tf
-import mnist_backward
-import mnist_forward
-import matplotlib.pyplot as plt
-import os
-'''
 import numpy as np
 import UI
 import wx
 import functions
 f = 0
 f1 = 0
-# img = np.zeros((512, 512, 3), np.uint8)
-
+model_flag=0
 
 def draw_line(img):
     def draw_circle(event, x, y, flags, param):
@@ -48,44 +38,50 @@ def draw_line(img):
     # functions.pre_high(img,1)
     cv2.imshow('img', img)
     img=cv2.bitwise_not(img)
-    testPicArr = functions.pre_high(img, 1)
-    preValue = functions.restore_model(testPicArr)
+    testPicArr = functions.pre_high(img)
+    if(model_flag):
+        preValue = functions.restore_model(testPicArr)
+    else:
+        preValue = functions.restore_model_lenet5(testPicArr)
+    #preValue = functions.restore_model(testPicArr)
+    #preValue = functions.restore_model_lenet5(testPicArr)
+    #print(preValue)
     return (preValue)
     #print(preValue)
     # cv2.waitKey(0)
 
 
 def application(path):
-    '''
-    # 对路径下全部图形文件做识别
-    path = input("input the number of test pictures:")
-    for root, dirs, files in os.walk(path):
-        for fle in files:
-            f_path = root + "\\" + fle
-            testPicArr = pre_high(f_path)
-            preValue = restore_model(testPicArr)
-            print("The prediction number is:", preValue)
-    return preValue
-    '''
     img=cv2.imread(path)
     testPicArr = functions.pre_high(img)
-    preValue = functions.restore_model(testPicArr)
+    global model_flag
+    if (model_flag):
+        preValue = functions.restore_model(testPicArr)
+    else:
+        preValue = functions.restore_model_lenet5(testPicArr)
     return preValue
 
 
-class window(UI.MyFrame1):
+class window(UI.MyFrame1):#继承UI文件中MyFrame1类
     def __init__(self,p):
         UI.MyFrame1.__init__(self,p)
-    def main_button_click(self,event):
-        path=self.m_textCtrl1.GetValue()
-        self.m_textCtrl2.SetValue(str(application(path)))
+    def main_button_click(self,event):#识别按钮绑定的函数
+        path=self.m_textCtrl1.GetValue()#获取输入框中的字符串
+        ans=application(path)
+        self.m_textCtrl2.SetValue(str(ans[0]))#将识别的结果送入输出框
+    def model_switch(self,event):
+        index = event.GetEventObject().GetSelection()
+        global model_flag
+        model_flag=index
     def pic_plot(self,event):
         while (True):
             try:
-                img = np.zeros((512, 512, 3), np.uint8)
-                draw_line(img)
-            except ValueError:
+                img = np.zeros((512, 512, 3), np.uint8)#创建一张空画布
+                ans=draw_line(img)#调用绘图程序
+                self.m_textCtrl2.SetValue(str(ans[0]))  # 将识别的结果送入输出框
+            except ValueError:#如果画布是空的，抛出错误并捕获，然后跳出循环
                 #print('exit')
+
                 break
 
 
